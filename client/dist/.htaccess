@@ -1,0 +1,17 @@
+# SPA fallback for the Project Assistant.
+# Client-side routes like /projects/1 have no real file on disk, so Apache would
+# 404 on a direct load/refresh/back. Rewrite anything that isn't a real file or
+# directory to index.html and let React Router handle it (which then runs the
+# auth check — e.g. shows the login screen after sign-out).
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /playground/doromal/projects-assistant-tool/
+
+  # Real files (assets, api/*.php, login.php, ...) and directories pass through.
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Everything else -> the SPA entry point.
+  RewriteRule ^ index.html [L]
+</IfModule>

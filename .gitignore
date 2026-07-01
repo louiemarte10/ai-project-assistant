@@ -3,9 +3,9 @@ node_modules/
 */node_modules/
 
 # Build output
-dist/
+# NOTE: client/dist/ is intentionally tracked so the built site is visible on GitHub.
+# The secret-*.php files inside it stay excluded via the rules further down.
 build/
-client/dist/
 server/dist/
 
 # Environment & secrets — NEVER commit these
