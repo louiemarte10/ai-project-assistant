@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Build output
+dist/
+build/
+client/dist/
+server/dist/
+
+# Environment & secrets — NEVER commit these
+.env
+*.env
+!.env.example
+
+# SFTP deploy config holds a plaintext password — keep it local only
+.vscode/sftp.json
+
+# Uploaded project documents (raw files)
+server/uploads/*
+!server/uploads/.gitkeep
+
+# Local TLS-inspection root CA (machine-specific, e.g. Avast) — do not commit
+*.pem
+
+# PHP API secrets (Gemini key, Anthropic key, GitHub token) — deployed via dist/, NEVER committed
+**/secret-gemini.php
+**/secret-anthropic.php
+**/secret-github.php
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db

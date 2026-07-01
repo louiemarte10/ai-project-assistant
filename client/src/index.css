@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Theme tokens (switched via data-theme on <html>) ───────────────────── */
+:root {
+  --app-bg: #f8fafc;
+  --surface: #ffffff;
+  --surface-2: #f1f5f9;
+  --border: #e2e8f0;
+  --text: #0f172a;
+  --text-muted: #64748b;
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --header-bg: #0f172a;
+  --bubble-user-bg: #2563eb;
+  --bubble-user-text: #ffffff;
+  --bubble-ai-bg: #ffffff;
+  --bubble-ai-text: #0f172a;
+  --code-bg: #0f172a;
+  --code-text: #e2e8f0;
+}
+
+[data-theme="dark"] {
+  --app-bg: #0b0f17;
+  --surface: #1c2230;
+  --surface-2: #10151e;
+  --border: #2b3547;
+  --text: #e5e9f0;
+  --text-muted: #94a3b8;
+  --primary: #3b82f6;
+  --primary-dark: #2563eb;
+  --header-bg: #070a10;
+  --bubble-user-bg: #2563eb;
+  --bubble-user-text: #ffffff;
+  --bubble-ai-bg: #232b3a;
+  --bubble-ai-text: #e5e9f0;
+  --code-bg: #0a0e15;
+  --code-text: #e5e9f0;
+}
+
+[data-theme="blue"] {
+  --app-bg: linear-gradient(135deg, #0a2d4d 0%, #1565c0 60%, #42a5f5 100%);
+  --surface: rgba(255, 255, 255, 0.10);
+  --surface-2: rgba(255, 255, 255, 0.06);
+  --border: rgba(255, 255, 255, 0.22);
+  --text: #ffffff;
+  --text-muted: #cfe3ff;
+  --primary: #38bdf8;
+  --primary-dark: #0ea5e9;
+  --header-bg: rgba(0, 0, 0, 0.35);
+  --bubble-user-bg: #0ea5e9;
+  --bubble-user-text: #ffffff;
+  --bubble-ai-bg: rgba(255, 255, 255, 0.12);
+  --bubble-ai-text: #ffffff;
+  --code-bg: rgba(0, 0, 0, 0.45);
+  --code-text: #e5e9f0;
+}
+
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  background: var(--app-bg);
+  background-attachment: fixed;
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* ── Theme dropdown (ported from lh-transfer-fixer) ─────────────────────── */
+.theme-dropdown { position: relative; }
+.theme-toggle-btn {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--surface); color: var(--text);
+  border: 1px solid var(--border); border-radius: 8px;
+  padding: 6px 12px; font-size: 14px; cursor: pointer;
+}
+.theme-toggle-btn:hover { border-color: var(--primary); }
+.theme-caret { font-size: 10px; opacity: 0.7; }
+.theme-menu {
+  position: absolute; right: 0; top: calc(100% + 6px);
+  background: var(--surface); color: var(--text);
+  border: 1px solid var(--border); border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  padding: 4px; min-width: 150px; z-index: 50;
+}
+.theme-menu-item {
+  display: flex; align-items: center; gap: 8px; width: 100%;
+  background: transparent; border: none; color: var(--text);
+  padding: 8px 10px; border-radius: 6px; font-size: 14px;
+  cursor: pointer; text-align: left;
+}
+.theme-menu-item:hover { background: var(--surface-2); }
+.theme-menu-item.active { background: var(--primary); color: #ffffff; }
+.theme-btn-icon { width: 1.2em; text-align: center; }
+
+/* ── Chat bubbles ───────────────────────────────────────────────────────── */
+.bubble-user { background: var(--bubble-user-bg); color: var(--bubble-user-text); }
+.bubble-ai {
+  background: var(--bubble-ai-bg); color: var(--bubble-ai-text);
+  border: 1px solid var(--border);
+}
+
+/* ── Markdown rendering (chat answers + overview) ───────────────────────── */
+.markdown :is(h1, h2, h3) { font-weight: 600; margin: 0.6em 0 0.3em; }
+.markdown h1 { font-size: 1.25rem; }
+.markdown h2 { font-size: 1.1rem; }
+.markdown p { margin: 0.4em 0; }
+.markdown ul { list-style: disc; padding-left: 1.25rem; margin: 0.4em 0; }
+.markdown code {
+  background: color-mix(in srgb, var(--text) 12%, transparent);
+  padding: 0.1em 0.3em; border-radius: 4px; font-size: 0.85em;
+}
+.markdown pre {
+  background: var(--code-bg); color: var(--code-text);
+  padding: 0.75rem; border-radius: 8px; overflow-x: auto;
+}
+.markdown pre code { background: transparent; padding: 0; color: inherit; }
