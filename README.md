@@ -1,4 +1,4 @@
-# Project Turnover Summary & Debugging Assistant
+# AI Project Assistant
 
 Internal tool to analyze handed-over projects: upload their docs/source, get an AI technical
 summary, ask project-isolated questions in chat, and export a README.
