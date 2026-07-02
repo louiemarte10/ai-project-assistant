@@ -485,20 +485,34 @@ if ($method === 'POST') {
     // deletion (the dashboard reads the ledger, not chat_logs).
     if (isset($out['usage']) && $out['usage'] !== null) { ai_usage_log($pid, $out['usage'], 'chat'); }
 
-    // For a brand-new thread, title it from the first question. Done locally
-    // (no extra AI call) to conserve the API quota — take the first ~8 words.
+    // For a brand-new thread, generate a short AI title that summarizes what the
+    // conversation is about (from the first message + reply, like Gemini). Falls
+    // back to the first few words locally if the AI title call isn't available.
     if ($convEnabled && $convId > 0 && $createdNew) {
-        $t = trim(preg_replace('/\s+/', ' ', $msg));
-        $words = explode(' ', $t);
-        if (count($words) > 8) { $t = implode(' ', array_slice($words, 0, 8)) . '…'; }
-        $t = substr($t, 0, 80);
-        if ($t !== '' && $t !== '(attachment)') {
-            $convTitle = $t;
-            $upd = $DB->prepare("UPDATE chat_conversations SET title=? WHERE conversation_id=?");
-            $upd->bind_param('si', $convTitle, $convId);
-            $upd->execute();
-            $upd->close();
+        $title = '';
+        if (!$aiError) {
+            $tprompt = "Generate a short, descriptive chat title (3 to 6 words, Title Case, no surrounding quotes, "
+                . "no trailing punctuation) that summarizes what this conversation is about. Reply with ONLY the title.\n\n"
+                . "User: " . $msg . "\n\nAssistant: " . substr($reply, 0, 500);
+            $tout = ai_generate($tprompt, false);
+            if (!empty($tout['ok'])) {
+                $tt = trim(preg_replace('/\s+/', ' ', $tout['text']));
+                $tt = trim($tt, " \t\n\r\0\x0B\"'.");
+                if ($tt !== '') { $title = substr($tt, 0, 80); }
+            }
         }
+        if ($title === '') { // fallback: first ~8 words of the message
+            $t = trim(preg_replace('/\s+/', ' ', $msg));
+            $words = explode(' ', $t);
+            if (count($words) > 8) { $t = implode(' ', array_slice($words, 0, 8)) . '…'; }
+            $title = substr($t, 0, 80);
+            if ($title === '' || $title === '(attachment)') { $title = 'New chat'; }
+        }
+        $convTitle = $title;
+        $upd = $DB->prepare("UPDATE chat_conversations SET title=? WHERE conversation_id=?");
+        $upd->bind_param('si', $convTitle, $convId);
+        $upd->execute();
+        $upd->close();
     }
 
     // Touch the conversation so it sorts to the top of the thread list.
